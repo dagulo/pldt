@@ -1,38 +1,66 @@
+var lVue = new Vue({
+    el:'#lDiv',
+    data:{
+        location:[],
+        lat:0,
+        lon:0
+    },
+    methods:{
+
+    },
+    ready:function(){
+
+    }
+});
 var map;
-function initMap() {
+$("#map").css({ opacity: 0, zoom: 0 });
+
+function initMap( ){
+    if( !lVue.$data.lat ){
+        return
+    }
     map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 5,
-        center: {lat: 24.886, lng: -70.268},
+        zoom: 14,
+        center: {lat: lVue.$data.lat, lng: lVue.$data.lon },
+        //center: {lat:7.070539951324463, lng: 125.59806823730469 },
         mapTypeId: 'terrain'
     });
 
-    // Define the LatLng coordinates for the polygon's path.
-    var triangleCoords = [
-        {lat: 32.321, lng: -64.757},
-        {lat: 30.35, lng: -76.94},
-        {lat: 25.42, lng: -79.45},
-        {lat: 24.68, lng: -79.64},
-        {lat: 18.466, lng: -66.118}
-    ];
-
+    //var tcoords = JSON.parse(lVue.$data.location.coverage);
+    var tcoords = [ {lat:7.086066, lng:125.595332},{lat:7.079178, lng:125.594873},{lat:7.073877, lng:125.590235},{lat:7.066938, lng:125.600901},{lat:7.074149, lng:125.607950},{lat:7.083367, lng:125.611931},{lat:7.083381, lng:125.609430} ];
     // Construct the polygon.
-    var bermudaTriangle = new google.maps.Polygon({
-        paths: triangleCoords,
+    var tpoly = new google.maps.Polygon({
+        paths: tcoords,
         strokeColor: '#FF0000',
         strokeOpacity: 0.8,
         strokeWeight: 2,
-        fillColor: '#FF0000',
+        fillColor: '#00FF00',
         fillOpacity: 0.35
     });
-    bermudaTriangle.setMap(map);
-}
+    tpoly.setMap(map);
 
-
-/***
-function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: -34.397, lng: 150.644},
-        zoom: 8
+    var pcoords = [
+        {lat:7.316688,lng:125.678772},
+        {lat:7.309901,lng:125.673327},
+        {lat:7.305429,lng:125.675573},
+        {lat:7.300923,lng:125.686801},
+        {lat:7.306947,lng:125.695068}
+    ];
+    // Construct the polygon.
+    var ppoly = new google.maps.Polygon({
+        paths: pcoords,
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#00FF00',
+        fillOpacity: 0.35
     });
+    ppoly.setMap(map);
+
 }
-***/
+
+function hideMap(){
+    $("#map").css({ opacity: 0, zoom: 0 });
+}
+
+

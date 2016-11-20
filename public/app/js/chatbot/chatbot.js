@@ -11,11 +11,11 @@ var chatVue = new Vue({
     data:{
         threads: [],
         parameters:{},
-        account:{}
+        account:{},
+        ticket_id: ''
     },
     methods:{
         toggle:function(){
-            $('#mapModal').modal();
 
             if( app === null ){
                 app = new App();
@@ -42,7 +42,7 @@ var chatVue = new Vue({
                 return;
             }
 
-            chat_obj = { by: '<span style="color:red">ChatBot</span>', message: '<i class="fa fa-refresh fa-spin"></i> ' };
+            chat_obj = { by: '<span style="color:red">Dothy</span>', message: '<i class="fa fa-refresh fa-spin"></i> ' };
             chatVue.$data.threads.push( chat_obj );
 
             idx = chatVue.$data.threads.length - 1;
@@ -50,11 +50,13 @@ var chatVue = new Vue({
             $.post( '/ajax/chat' , $( '#cForm' ).serialize() )
             .done( function( data ){
                 if( data.success ){
-                    chat_obj = { by: '<span style="color:red">ChatBot</span>', message: data.response.result.fulfillment.speech };
+
+                    chat_obj = { by: '<span style="color:red">Dothy</span>', message: data.response.result.fulfillment.speech };
                     Vue.set( chatVue.$data.threads, idx, chat_obj );
                     $('#q').val('');
 
                     chatVue.$data.parameters = data.response.result.parameters;
+                    chatVue.doNowParameters( data.response );
                 }else{
                     toastr.error( data.message );
                 }
@@ -63,14 +65,20 @@ var chatVue = new Vue({
             });
 
         },
-        refresh:function()
-        {
+        refresh:function(){
             this.threads = [];
-            $('#mapModal').modal()
         },
-        doNothing:function()
-        {
+        doNothing:function(){
             return null;
+        },
+        doNowParameters:function( response )
+        {
+            switch( this.parameters.doNow ){
+                case 'activateFaq':
+                    $('#question').val( response.result.resolvedQuery );
+                    searchVue.ask();
+                break;
+            }
         },
         processParameters:function( q )
         {
@@ -78,13 +86,13 @@ var chatVue = new Vue({
                 case 'getBillExpectAccountNum':
                     // next chat message expected is numeric
                     account_number = q.replace(/\D/g, '' );
-                    chat_obj = { by: '<span style="color:red">ChatBot</span>', message: 'One moment pls while we process your request' };
+                    chat_obj = { by: '<span style="color:red">Dothy</span>', message: 'One moment pls while we process your request' };
                     chatVue.$data.threads.push( chat_obj );
 
                     $.post( '/ajax/chat/getAccountBill' , { _token: $('input[name="_token"]').val() , account_id: account_number   } )
                     .done(function( data ){
                         if( data.success ){
-                            chat_obj = { by: '<span style="color:red">ChatBot</span>', message: '<i class="fa fa-refresh fa-spin"></i> ' };
+                            chat_obj = { by: '<span style="color:red">Dothy</span>', message: '<i class="fa fa-refresh fa-spin"></i> ' };
                             chatVue.$data.threads.push( chat_obj );
 
                             idx = chatVue.$data.threads.length - 1;
@@ -94,7 +102,7 @@ var chatVue = new Vue({
                                 message = 'Hello '+data.account.account_first_name+', your account balance is $'+data.account.current_bill
                                 +' due on '+data.account.due
                                 +'. Do you want to pay online ? Type yes if you want to pay online' ;
-                                chat_obj = { by: '<span style="color:red">ChatBot</span>', message: message };
+                                chat_obj = { by: '<span style="color:red">Dothy</span>', message: message };
                                 Vue.set( chatVue.$data.threads, idx, chat_obj );
                             }, 3000 );
 
@@ -110,7 +118,7 @@ var chatVue = new Vue({
                 break;
                 case 'PayOnline':
                     if( q == 'yes'){
-                        chat_obj = { by: '<span style="color:red">ChatBot</span>',
+                        chat_obj = { by: '<span style="color:red">Dothy</span>',
                             message: 'Please wait while I open a payment window ' +
                             'at the box on the right' };
                         chatVue.$data.threads.push( chat_obj );
@@ -121,8 +129,30 @@ var chatVue = new Vue({
 
                     return null;
                 break;
+                case 'geocity':
+                    $.get( '/ajax/city/coordinates' , {city:this.parameters.geocity})
+                    .done(function( data ){
+                        if(data.success){
+                            lVue.$data.location = data.city;
+                            lVue.$data.lon = data.city.lon;
+                            lVue.$data.lat = data.city.lat;
+
+                            if( q == 'show map'){
+                                initMap();
+                                $("#map").css({ opacity: 1, zoom: 1 });
+                            }
+
+                            chatVue.$data.parameters = [];
+                        }else{
+                           toastr.error( data.message );
+                        }
+                    })
+                    .error(function( data ){
+                        toastr.error('Something went wrong');
+                    });
+                break;
                 default:
-                    return null;
+                    return this.processQuery( q );
                 break;
             }
         },
@@ -136,7 +166,7 @@ var chatVue = new Vue({
             .done( function( data ){
                 if(data.success){
                     setTimeout( function(){
-                        chat_obj = { by: '<span style="color:red">ChatBot</span>', message: 'Payment successfully received. Your account balance is now P'+data.account.current_bill };
+                        chat_obj = { by: '<span style="color:red">Dothy</span>', message: 'Payment successfully received. Your account balance is now P'+data.account.current_bill };
                         chatVue.$data.threads.push( chat_obj );
                     }, 3000 );
 
@@ -149,7 +179,59 @@ var chatVue = new Vue({
             .error(function( data ){
                 toastr.error('Something went wrong');
             });
+        },
+        processQuery:function( q ){
+            switch( q ){
+                case 'open complaint form':
+                    this.openComplaintForm();
+                    return true;
+                break;
+                case 'open map':
+
+
+                break;
+            }
+
+            return null;
+        },
+        openComplaintForm:function()
+        {
+            $('#complaintModal').modal();
+        },
+        populateComplaintForm:function()
+        {
+            // auto-populate:: just dummy text for now to hasten form fillup
+            $('#name').val( 'Maria Diaz');
+            $('#landline').val( '082-2820991');
+            $('#email').val( 'maria@gmail.com' );
+            $('#complaint').val( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum' );
+        },
+
+        submitComplaintForm:function()
+        {
+            $( '.btn' ).prop( 'disabled', true );
+            $( '#sbn' ).html( '<i class="fa fa-refresh fa-spin"></i>' );
+
+            setTimeout( function(){
+                var text = "";
+                var length = 8;
+                var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                for (var i = 0; i < length; i++) {
+                    text += possible.charAt(Math.floor(Math.random() * possible.length));
+                }
+
+                chatVue.$data.ticket_id =  text;
+                $('.cc').addClass( 'hide' );
+                $('#ticketDiv').removeClass( 'hide' );
+                $( '.btn' ).prop( 'disabled', false );
+                $( '#sbn' ).html( 'Submit' );
+            }, 2000 );
+
         }
+
+
+
+
     },
     ready:function(){
 
@@ -322,7 +404,7 @@ function App() {
                 $('#q').val( data.result.resolvedQuery );
             }
 
-            chat_obj = { by: 'ChatBot', message: speech };
+            chat_obj = { by: '<span style="color:red">Dothy</span>', message: speech };
             chatVue.$data.threads.push( chat_obj );
             initialized = true;
             app.stop();
@@ -368,7 +450,7 @@ function App() {
     function _generateId(length) {
         var text = "";
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        for (var i = 0; i < length; i++) {
+        for( var i = 0; i < length; i++ ){
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
         return text;

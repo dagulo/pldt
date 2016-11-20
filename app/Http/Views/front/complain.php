@@ -3,16 +3,16 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="pull-right">
-                    <a href="javascript:" class=""><i class="fa fa-refresh"></i></a>
+                    <a href="javascript:" class="" v-on:click="populateComplaintForm"><i class="fa fa-refresh"></i></a>
                 </div>
                 <h2><b>Complaint Form</b></h2>
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" name="name" id="" class="form-control" />
+                    <input type="text" name="name" id="name" class="form-control" />
                 </div>
                 <div class="form-group">
-                    <label for="">Your Landline</label>
-                    <input type="text" name="" id="name" class="form-control" />
+                    <label for="">Landline Plus Area Code</label>
+                    <input type="text" name="landline" id="landline" class="form-control" />
                 </div>
                 <div class="form-group">
                     <label for="">Email</label>
@@ -23,7 +23,7 @@
                     <textarea name="complaint" id="complaint" class="form-control"></textarea>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-primary"> Submit </button>
+                    <button class="btn btn-primary" v-on:click="submitComplainForm"> Submit </button>
                 </div>
             </div>
         </div>

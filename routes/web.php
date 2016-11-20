@@ -18,8 +18,10 @@ Route::get( 'complain', 'FrontController@complain' );
 
 Route::group( [ 'prefix' => 'ajax' , 'namespace' => 'Ajax' ] , function(){
     Route::post( 'chat', 'AjaxChatController@chat' );
+    Route::get( 'city/coordinates', 'AjaxChatController@getCityCoordinates' );
     Route::post( 'chat/getAccountBill', 'AjaxChatController@getAccountBill' );
     Route::post( 'pay', 'AjaxPaymentController@pay' );
+
 });
 
 

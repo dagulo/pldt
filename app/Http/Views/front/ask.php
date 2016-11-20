@@ -3,6 +3,51 @@
     <div class="col-lg-4">
         <div class="panel panel-default" id="chatDiv">
             <div class="panel-body">
+                <div id="complaintModal" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-hidden="true">&times;</button>
+                                <h4 class="modal-title"></h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="cc" id="complaintDiv">
+                                    <div class="pull-right">
+                                        <a href="javascript:" class="" v-on:click="populateComplaintForm"><i class="fa fa-refresh"></i></a>
+                                    </div>
+                                    <h2><b>Complaint Form</b></h2>
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" name="name" id="name" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Your Landline</label>
+                                        <input type="text" name="landline" id="landline" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Email</label>
+                                        <input type="text" name="email" id="email" class="form-control" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Complaint</label>
+                                        <textarea name="complaint" id="complaint" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                                <div class="cc hide" id="ticketDiv">
+
+                                    A support ticket was generated please use the ticket ID below to monitor the progress of your complaint
+                                    <div>
+                                        <h2><b>Ticket ID: {{ticket_id}} </b></h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary cc" id="sbn" v-on:click="submitComplaintForm">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div id="paymentModal" class="modal fade">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -93,10 +138,11 @@
         </div>
 
     </div>
-    <div class="col-lg-4" id="mapDiv">
+    <div class="col-lg-4" id="mDiv1">
     </div>
-    <div class="col-lg-8" id="mapDiv">
-        <div id="map" style="width:100%;height:420px;"></div>
+    <div class="col-lg-8" id="mapDiv" style="">
+        <div class="pull-right"><a href="javascript:hideMap()"><i class="fa fa-times"></i></a></div>
+        <div id="map" style="width:800px;height:420px;"></div>
     </div>
     <div id="mapModal" class="modal fade">
         <div class="modal-dialog">

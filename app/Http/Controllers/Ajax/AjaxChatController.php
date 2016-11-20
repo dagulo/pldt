@@ -6,6 +6,7 @@ use ApiAi\Client;
 use ApiAi\Method\QueryApi;
 use ApiAi\Model\Query;
 use App\Http\Models\Accounts;
+use App\Http\Models\Cities;
 use Helpers\Layout;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -69,5 +70,20 @@ class AjaxChatController extends Controller{
             'account' => $account
         ];
 
+    }
+
+    public function getCityCoordinates( Request $r )
+    {
+        if( ! $city = (new Cities)->byCity( $r->city ) ){
+            return [
+                'success' =>false,
+                'message' => 'City not found'
+            ];
+        }
+
+        return [
+            'success' =>true,
+            'city' => $city
+        ];
     }
 }
