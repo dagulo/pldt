@@ -3,50 +3,10 @@
     <div style="text-align: center">
         <div><img src="/dothy.png" /> </div>
         <span style="font-size: 64px">AskDothy</span><br />
-        <span style="font-size: 24px">Your Quick, Reliable and Intelligent Chatbot</span>
+        <span style="font-size: 24px">Your Quick, Reliable and Intelligent Customer Support Chatbot</span>
         <br /><br />
         <div style="text-align: center">
             <a href="<?php echo Url('ask') ?>" class="btn btn-primary btn-lg"> ASK ME  </a>
         </div>
     </div>
-    <!--
-    <div class="col-lg-6">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <div style="text-align: center">
-                    <a href="<?php echo Url('complain') ?>" class="btn btn-primary btn-lg"> I WANT TO COMPLAIN </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <div style="text-align: center">
-                    <a href="<?php echo Url('ask') ?>" class="btn btn-primary btn-lg"> I WANT TO ASK  </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6">
-        <div class="panel panel-default">
-            <div class="panel-body">
-
-                <div class="form-group">
-                    <label for="ticket_id">TICKET ID</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="ticket_id" id="ticket_id">
-                        <span class="input-group-btn">
-                            <button class="btn btn-secondary" type="button">View My Ticket ! </button>
-                        </span>
-                    </div>
-                </div>
-
-                <ul>
-                    <li>Check repair status</li>
-                    <li>Follow up on a complaint</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    -->
 </div>

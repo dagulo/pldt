@@ -99,7 +99,7 @@ var chatVue = new Vue({
                             chatVue.$data.account = data.account;
                             // just delay reply
                             setTimeout( function(){
-                                message = 'Hello '+data.account.account_first_name+', your account balance is $'+data.account.current_bill
+                                message = 'Hello '+data.account.account_first_name+', your account balance is P'+data.account.current_bill
                                 +' due on '+data.account.due
                                 +'. Do you want to pay online ? Type yes if you want to pay online' ;
                                 chat_obj = { by: '<span style="color:red">Dothy</span>', message: message };
@@ -168,6 +168,7 @@ var chatVue = new Vue({
                     setTimeout( function(){
                         chat_obj = { by: '<span style="color:red">Dothy</span>', message: 'Payment successfully received. Your account balance is now P'+data.account.current_bill };
                         chatVue.$data.threads.push( chat_obj );
+                        toastr.success('Payment successful');
                     }, 3000 );
 
                     $('#paymentModal').modal( 'toggle' );
